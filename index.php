@@ -1,174 +1,112 @@
 <?php
 session_start();
-error_reporting(0);
 include('includes/config.php');
-?>
-<!DOCTYPE HTML>
-<html>
-<head>
-<title>Intelligo</title>
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-
-<script type="applijewelleryion/x-javascript"> addEventListener("load", function() { setTimeout(hideURLbar, 0); }, false); function hideURLbar(){ window.scrollTo(0,1); } </script>
-<link href="css/bootstrap.css" rel='stylesheet' type='text/css' />
-<link href="css/style.css" rel='stylesheet' type='text/css' />
-<link href='//fonts.googleapis.com/css?family=Open+Sans:400,700,600' rel='stylesheet' type='text/css'>
-<link href='//fonts.googleapis.com/css?family=Roboto+Condensed:400,700,300' rel='stylesheet' type='text/css'>
-<link href='//fonts.googleapis.com/css?family=Oswald' rel='stylesheet' type='text/css'>
-<link href="css/font-awesome.css" rel="stylesheet">
-<!-- Custom Theme files -->
-<script src="js/jquery-1.12.0.min.js"></script>
-<script src="js/bootstrap.min.js"></script>
-<!--animate-->
-<link href="css/animate.css" rel="stylesheet" type="text/css" media="all">
-<script src="js/wow.min.js"></script>
-	<script>
-		 new WOW().init();
-	</script>
-<!--//end-animate-->
-</head>
-<body>
-<?php include('includes/header.php');?>
-<div class="banner">
-	<div class="container">
-		<h1 class="wow zoomIn animated animated" data-wow-delay=".5s" style="visibility: visible; animation-delay: 0.5s; animation-name: zoomIn; " > Intelligent tourist guide system</h1>
-	</div>
-</div>
-
-
-<!--- rupes ---->
-<div class="container">
-	<div class="rupes">
-		<div class="col-md-4 rupes-left wow fadeInDown animated animated" data-wow-delay=".5s" style="visibility: visible; animation-delay: 0.5s; animation-name: fadeInDown;">
-			<div class="rup-left">
-				<a href="offers.html"><i class="fa fa-usd"></i></a>
-			</div>
-			<div class="rup-rgt">
-				<h3>UP TO 50% OFF</h3>
-				<h4><a href="offers.html">Affordable Prices</a></h4>
-				
-			</div>
-				<div class="clearfix"></div>
-		</div>
-		<div class="col-md-4 rupes-left wow fadeInDown animated animated" data-wow-delay=".5s" style="visibility: visible; animation-delay: 0.5s; animation-name: fadeInDown;">
-			<div class="rup-left">
-				<a href="offers.html"><i class="fa fa-h-square"></i></a>
-			</div>
-			<div class="rup-rgt">
-				<h3>great deals </h3>
-				<h4><a href="offers.html">Packages around India</a></h4>
-				
-			</div>
-				<div class="clearfix"></div>
-		</div>
-		<div class="col-md-4 rupes-left wow fadeInDown animated animated" data-wow-delay=".5s" style="visibility: visible; animation-delay: 0.5s; animation-name: fadeInDown;">
-			<div class="rup-left">
-				<a href="offers.html"><i class="fa fa-mobile"></i></a>
-			</div>
-			<div class="rup-rgt">
-				<h3>exclusive offers</h3>
-				<h4><a href="offers.html">On Chandigarh Tours</a></h4>
-			
-			</div>
-				<div class="clearfix"></div>
-		</div>
-	
-	</div>
-</div>
-<!--- /rupes ---->
-
-
-
-
-<!---holiday---->
-<div class="container">
-	<div class="holiday">	
-	<h3>Packages</h3>
-				
-<?php $sql = "SELECT * from tbltourpackages order by rand() limit 4";
-$query = $dbh->prepare($sql);
-$query->execute();
+if(isset($_POST['login']))
+{
+$uname=$_POST['username'];
+$password=md5($_POST['password']);
+$sql ="SELECT UserName,Password FROM admin WHERE UserName=:uname and Password=:password";
+$query= $dbh -> prepare($sql);
+$query-> bindParam(':uname', $uname, PDO::PARAM_STR);
+$query-> bindParam(':password', $password, PDO::PARAM_STR);
+$query-> execute();
 $results=$query->fetchAll(PDO::FETCH_OBJ);
-$cnt=1;
 if($query->rowCount() > 0)
 {
-foreach($results as $result)
-{	?>
-			<div class="rom-btm">
-				<div class="col-md-3 room-left wow fadeInLeft animated" data-wow-delay=".5s">
-				<a href="indexs.php" target="_blank">	<img src="admin/pacakgeimages/<?php echo htmlentities($result->PackageImage);?>" class="img-responsive" alt=""></a>
-				</div>
-				<div class="col-md-6 room-midle wow fadeInUp animated" data-wow-delay=".5s">
-					<h4>Package Name: <?php echo htmlentities($result->PackageName);?></h4>
-					<h6>Package Type : <?php echo htmlentities($result->PackageType);?></h6>
-					<p><b>Package Location :</b> <?php echo htmlentities($result->PackageLocation);?></p>
-					<p><b>Features</b> <?php echo htmlentities($result->PackageFetures);?></p>
-				</div>
-				<div class="col-md-3 room-right wow fadeInRight animated" data-wow-delay=".5s">
-					<h5>Rupees <?php echo htmlentities($result->PackagePrice);?></h5>
-					<a href="package-details.php?pkgid=<?php echo htmlentities($result->PackageId);?>" class="view">Details</a> 
-					
-				</div>
-				<div class="clearfix"></div>
-			</div>
+$_SESSION['alogin']=$_POST['username'];
+echo "<script type='text/javascript'> document.location = 'dashboard.php'; </script>";
+} else{
+	
+	echo "<script>alert('Invalid Details');</script>";
 
-<?php }} ?>
-			
-		
-<div><a href="package-list.php" class="view">View More Packages</a></div>
-</div>
-			<div class="clearfix"></div>
-	</div>
+}
 
+}
 
-
-<!--- routes ---->
-<div class="routes">
+?>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Admin Sign in|Intelligo</title>
+    <!--for custom css -->
+    <link rel="stylesheet" href="css/login.css">
+    <link rel="stylesheet" href="styles.css">
+	<!-----extra-------------->
+	
+	<!-- Bootstrap Core CSS -->
+	<link href="css/bootstrap.min.css" rel='stylesheet' type='text/css' />
+	<!-- Custom CSS -->
+	<link href="css/login.css" rel='stylesheet' type='text/css' />
+	<link rel="stylesheet" href="css/morris.css" type="text/css"/>
+	<!--Graph CSS -->
+	<link href="css/font-awesome.css" rel="stylesheet">
+	<link rel="stylesheet" href="css/jquery-ui.css"> 
+	<!-- jQuery -->
+	<script src="js/jquery-2.1.4.min.js"></script>
+	<!-- //jQuery -->
+	<link href='//fonts.googleapis.com/css?family=Roboto:700,500,300,100italic,100,400' rel='stylesheet' type='text/css'/>
+	<link href='//fonts.googleapis.com/css?family=Montserrat:400,700' rel='stylesheet' type='text/css'>
+	<!-- lined-icons -->
+	<link rel="stylesheet" href="css/icon-font.min.css" type='text/css' />
+	</head>
+	<body class="body-fixed">
+	<div class="main-wthree">
 	<div class="container">
-		<div class="col-md-4 routes-left wow fadeInRight animated" data-wow-delay=".5s">
-			<div class="rou-left">
-				<a href="#"><i class="glyphicon glyphicon-list-alt"></i></a>
-			</div>
-			<div class="rou-rgt wow fadeInDown animated" data-wow-delay=".5s">
-				<h3>80</h3>
-				<p>Enquiries</p>
-			</div>
-				<div class="clearfix"></div>
+	<div class="sin-w3-agile">
+    <img class="wave" src="images/wave.png">
+	<div class="container_login">
+		<div class="img_login">
+			<img src="images/bg.svg">
 		</div>
-		<div class="col-md-4 routes-left">
-			<div class="rou-left">
-				<a href="#"><i class="fa fa-user"></i></a>
+		<div class="login-content">
+			<form method="post">
+				<img src="images/avatar.svg">
+				<h2 class="title">Admin Sign in</h2>
+           		<div class="input-div one">
+           		   <div class="i">
+           		   		
+           		   </div>
+           		   <div class="username div" >
+						<h5>Username</h5>
+						<input type="text" name="username" class="name" placeholder="" required="">
+						<div class="clearfix"></div>
+				</div>
+           		</div>
+           		<div class="input-div pass">
+           		   <div class="i"> 
+					  
+           		   </div>
+           		   <div class="password-agileits div">
+					<h5>Password</h5>
+					<input type="password" name="password" class="password" placeholder="" required="">
+					<div class="clearfix"></div>
+				   </div>
+            	</div>
+				<div class="back">
+				<a href="../index.php" class="login_link">Back to home</a></div>
+            	<div class="login-w3">
+					<input type="submit" class="login btn_login" name="login" value="Sign In">
 			</div>
-			<div class="rou-rgt">
-				<h3>100</h3>
-				<p>Regestered users</p>
-			</div>
-				<div class="clearfix"></div>
-		</div>
-		<div class="col-md-4 routes-left wow fadeInRight animated" data-wow-delay=".5s">
-			<div class="rou-left">
-				<a href="#"><i class="fa fa-ticket"></i></a>
-			</div>
-			<div class="rou-rgt">
-				<h3>7+</h3>
-				<p>Booking</p>
-			</div>
-				<div class="clearfix"></div>
-		</div>
-		<div class="clearfix"></div>
-	</div>
-</div>
+			<div class="clearfix"></div>
+            </form>
+        </div>
+    </div>
 
-<?php include('includes/footer.php');?>
-<!-- signup -->
-<?php include('includes/signup.php');?>			
-<!-- //signu -->
-<!-- signin -->
-<?php include('includes/signin.php');?>			
-<!-- //signin -->
-<!-- write us -->
-<?php include('includes/write-us.php');?>			
-<!-- //write us -->
+     
+
+
+
+<!------>
+</div>
+</div> 
+<script src="login.js"></script>
+
+
+</div>
+	</div>
+	</div>
+	<script type="application/x-javascript"> addEventListener("load", function() { setTimeout(hideURLbar, 0); }, false); function hideURLbar(){ window.scrollTo(0,1); }
 </body>
 </html>
